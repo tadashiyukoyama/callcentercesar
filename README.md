@@ -10,7 +10,17 @@ Aplicação local para organizar contatos, funil Kanban, retornos e histórico d
 
 O banco SQLite é criado em `D:\Discador\data`. O caminho padrão do ADB é `D:\AndroidTools\platform-tools\adb.exe` e pode ser ajustado no arquivo `D:\Discador\config.json` depois que ele for criado. Use `config.example.json` como referência se precisar configurar manualmente.
 
-O banco, os backups e a configuração do celular são locais e não são enviados ao GitHub.
+O banco operacional, os backups e a configuração do celular permanecem locais e não são enviados ao GitHub. Para migração entre computadores, este repositório inclui o export portátil autorizado pelo proprietário em `handoff/crm-state.json`; ele contém os contatos, o andamento do funil e o histórico disponíveis no momento da exportação, mas não contém `config.json`, tokens ou senhas.
+
+## Migrar para outro computador
+
+Leia `docs/HANDOFF-NOTEBOOK.md` para o contexto completo do CRM, Android e diagnóstico de áudio Bluetooth. Em uma instalação nova, restaure o estado incluído com:
+
+```powershell
+python D:\Discador\tools\restore_crm_state.py
+```
+
+O restaurador se recusa a sobrescrever um banco que já contenha contatos. Use `--replace` somente quando quiser substituir deliberadamente esse banco pelo estado do arquivo de handoff.
 
 ## CSV de importação
 
