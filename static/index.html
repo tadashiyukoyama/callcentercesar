@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8fafc" />
+    <title>Discador | CRM local</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232563eb'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-size='18' font-weight='700' fill='white'%3ED%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">D</div>
+          <div>
+            <div class="brand-name">discador</div>
+            <div class="brand-subtitle">CRM local</div>
+          </div>
+        </div>
+
+        <div class="sidebar-label">Operação</div>
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-view-target="dashboard" type="button">
+            <span class="icon" data-icon="grid" aria-hidden="true"></span>
+            <span>Visão geral</span>
+          </button>
+          <button class="nav-item" data-view-target="contacts" type="button">
+            <span class="icon" data-icon="users" aria-hidden="true"></span>
+            <span>Contatos</span>
+            <span class="nav-count" id="nav-contact-count">0</span>
+          </button>
+          <button class="nav-item" data-view-target="funnel" type="button">
+            <span class="icon" data-icon="layers" aria-hidden="true"></span>
+            <span>Funil</span>
+          </button>
+          <button class="nav-item" data-view-target="history" type="button">
+            <span class="icon" data-icon="history" aria-hidden="true"></span>
+            <span>Histórico</span>
+          </button>
+          <button class="nav-item" data-view-target="settings" type="button">
+            <span class="icon" data-icon="sliders" aria-hidden="true"></span>
+            <span>Configuração</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+        <div class="device-mini-card">
+          <div class="device-mini-heading">
+            <span class="status-dot" id="sidebar-status-dot"></span>
+            <span id="sidebar-device-state">Verificando aparelho</span>
+          </div>
+          <div class="device-mini-model" id="sidebar-device-model">ADB via Wi-Fi</div>
+          <button class="text-button" id="sidebar-connect" type="button">Verificar conexão</button>
+        </div>
+        <div class="sidebar-footer">Dados somente em <strong>D:\Discador</strong></div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="mobile-brand">
+            <div class="brand-mark" aria-hidden="true">D</div>
+            <span>discador</span>
+          </div>
+          <div class="topbar-context">
+            <span class="eyebrow" id="page-eyebrow">CENTRAL DE OPERAÇÃO</span>
+            <span class="topbar-separator">/</span>
+            <span id="page-context">Visão geral</span>
+          </div>
+          <div class="topbar-actions">
+            <span class="topbar-clock" id="topbar-clock">--:--</span>
+            <button class="icon-button" id="theme-toggle" type="button" aria-label="Alternar tema" title="Alternar tema">
+              <span class="icon" data-icon="sun" aria-hidden="true"></span>
+            </button>
+            <button class="button button-primary button-compact" id="topbar-new-contact" type="button">
+              <span class="icon" data-icon="plus" aria-hidden="true"></span>
+              Novo contato
+            </button>
+          </div>
+        </header>
+
+        <div class="main-scroll">
+          <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+          <section class="view is-active" data-view="dashboard">
+            <div class="page-header dashboard-header">
+              <div>
+                <div class="eyebrow">OPERAÇÃO LOCAL</div>
+                <h1>Discador de vendas</h1>
+                <p>Organize a fila, ligue pelo celular e avance o funil sem perder o contexto.</p>
+              </div>
+              <div class="header-status-card" id="header-status-card">
+                <span class="status-dot status-dot-large" id="header-status-dot"></span>
+                <div>
+                  <strong id="header-status-label">Verificando conexão</strong>
+                  <span id="header-status-detail">ADB via Wi-Fi</span>
+                </div>
+                <button class="icon-button icon-button-small" id="header-refresh" type="button" aria-label="Atualizar status" title="Atualizar status">
+                  <span class="icon" data-icon="refresh" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="metric-grid" id="metric-grid">
+              <article class="metric-card">
+                <div class="metric-label">Contatos na base</div>
+                <div class="metric-value" id="metric-total">0</div>
+                <div class="metric-foot"><span class="metric-icon tone-blue"><span class="icon" data-icon="users" aria-hidden="true"></span></span><span>todos os registros</span></div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-label">Fila ativa</div>
+                <div class="metric-value" id="metric-active">0</div>
+                <div class="metric-foot"><span class="metric-icon tone-green"><span class="icon" data-icon="layers" aria-hidden="true"></span></span><span>prontos para trabalhar</span></div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-label">Retornos vencendo</div>
+                <div class="metric-value" id="metric-due">0</div>
+                <div class="metric-foot"><span class="metric-icon tone-amber"><span class="icon" data-icon="calendar" aria-hidden="true"></span></span><span>até hoje</span></div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-label">Ligações hoje</div>
+                <div class="metric-value" id="metric-calls">0</div>
+                <div class="metric-foot"><span class="metric-icon tone-violet"><span class="icon" data-icon="phone" aria-hidden="true"></span></span><span>registradas no CRM</span></div>
+              </article>
+            </div>
+
+            <div class="workspace-grid">
+              <article class="panel dialer-panel">
+                <div class="panel-heading panel-heading-spaced">
+                  <div>
+                    <div class="eyebrow">CONTROLE DE CHAMADA</div>
+                    <h2>Próximo contato</h2>
+                  </div>
+                  <span class="call-state-badge" id="call-state-badge">Parado</span>
+                </div>
+
+                <div class="auto-operation" id="auto-operation">
+                  <div class="auto-operation-copy">
+                    <span class="auto-operation-icon"><span class="icon" data-icon="zap" aria-hidden="true"></span></span>
+                    <div>
+                      <strong>Operação automática assistida</strong>
+                      <span id="auto-operation-status">Uma chamada por vez; para quando a ligação conectar.</span>
+                    </div>
+                  </div>
+                  <div class="auto-operation-actions">
+                    <span class="auto-progress" id="auto-progress">0 tentativas</span>
+                    <button class="button button-call" id="auto-start-button" type="button"><span class="icon" data-icon="play" aria-hidden="true"></span> Iniciar</button>
+                    <button class="button button-secondary" id="auto-pause-button" type="button" disabled><span class="icon" data-icon="pause" aria-hidden="true"></span> Pausar</button>
+                  </div>
+                </div>
+
+                <div class="dialer-contact" id="dialer-contact">
+                  <div class="empty-state compact-empty">
+                    <span class="empty-icon"><span class="icon" data-icon="phone-forwarded" aria-hidden="true"></span></span>
+                    <strong>Selecione um contato para começar</strong>
+                    <span>Escolha alguém da fila ou da tela de contatos.</span>
+                    <button class="button button-secondary" id="select-first-contact" data-action="select-first" type="button">Selecionar primeiro da fila</button>
+                  </div>
+                </div>
+
+                <div class="dialer-actions" id="dialer-actions" hidden>
+                  <button class="button button-call" id="dial-button" type="button">
+                    <span class="icon" data-icon="phone" aria-hidden="true"></span>
+                    Ligar
+                  </button>
+                  <button class="button button-secondary" id="speaker-button" type="button">
+                    <span class="icon" data-icon="volume-2" aria-hidden="true"></span>
+                    Ativar viva-voz
+                  </button>
+                  <button class="button button-danger-ghost" id="hangup-button" type="button">
+                    <span class="icon" data-icon="phone-off" aria-hidden="true"></span>
+                    Desligar
+                  </button>
+                </div>
+                <div class="call-helper" id="call-helper">O áudio fica no alto-falante e no microfone do celular.</div>
+
+                <div class="outcome-section" id="outcome-section" tabindex="-1" hidden>
+                  <div class="section-label-row">
+                    <span class="section-label">Como terminou?</span>
+                    <span class="selection-hint" id="outcome-hint">Escolha um resultado</span>
+                  </div>
+                  <div class="outcome-grid" id="outcome-grid">
+                    <button class="outcome-button outcome-positive" data-outcome="answered" type="button"><span class="icon" data-icon="check-circle" aria-hidden="true"></span> Atendeu</button>
+                    <button class="outcome-button outcome-positive" data-outcome="interested" type="button"><span class="icon" data-icon="thumbs-up" aria-hidden="true"></span> Interessado</button>
+                    <button class="outcome-button outcome-positive" data-outcome="meeting" type="button"><span class="icon" data-icon="calendar-check" aria-hidden="true"></span> Reunião</button>
+                    <button class="outcome-button outcome-negative" data-outcome="refused" type="button"><span class="icon" data-icon="thumbs-down" aria-hidden="true"></span> Recusou</button>
+                    <button class="outcome-button" data-outcome="voicemail" type="button"><span class="icon" data-icon="voicemail" aria-hidden="true"></span> Caixa postal</button>
+                    <button class="outcome-button" data-outcome="wrong_number" type="button"><span class="icon" data-icon="hash" aria-hidden="true"></span> Número inválido</button>
+                    <button class="outcome-button" data-outcome="busy" type="button"><span class="icon" data-icon="minus-circle" aria-hidden="true"></span> Ocupado</button>
+                    <button class="outcome-button" data-outcome="dropped" type="button"><span class="icon" data-icon="phone-off" aria-hidden="true"></span> Caiu</button>
+                    <button class="outcome-button" data-outcome="no_answer" type="button"><span class="icon" data-icon="clock" aria-hidden="true"></span> Não atendeu</button>
+                    <button class="outcome-button" data-outcome="callback" type="button"><span class="icon" data-icon="calendar" aria-hidden="true"></span> Agendar retorno</button>
+                  </div>
+                  <label class="field-label notes-label" for="call-notes">Nota rápida (opcional)</label>
+                  <textarea id="call-notes" class="text-area" rows="2" placeholder="Ex.: pediu retorno na próxima semana..."></textarea>
+                  <div class="callback-date-row">
+                    <label class="field-label" for="call-return-date">Data de retorno (se aplicável)</label>
+                    <input id="call-return-date" type="datetime-local" />
+                  </div>
+                  <div class="outcome-submit-row">
+                    <button class="button button-primary button-wide" id="next-call-button" type="button" disabled>
+                      <span class="icon" data-icon="skip-forward" aria-hidden="true"></span>
+                      Registrar e chamar próximo
+                    </button>
+                    <button class="button button-quiet" id="record-button" type="button" disabled>Registrar sem chamar</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="panel queue-panel">
+                <div class="panel-heading panel-heading-spaced">
+                  <div>
+                    <div class="eyebrow">ORDEM SUGERIDA</div>
+                    <h2>Fila de contatos</h2>
+                  </div>
+                  <button class="icon-button icon-button-small" id="queue-refresh" type="button" aria-label="Atualizar fila" title="Atualizar fila"><span class="icon" data-icon="refresh" aria-hidden="true"></span></button>
+                </div>
+                <div class="queue-list" id="queue-list">
+                  <div class="loading-state"><span class="spinner"></span> Carregando fila...</div>
+                </div>
+                <div class="panel-footer-link"><button class="text-button" data-view-target="contacts" type="button">Ver todos os contatos <span aria-hidden="true">→</span></button></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="view" data-view="contacts">
+            <div class="page-header">
+              <div>
+                <div class="eyebrow">BASE DE DADOS</div>
+                <h1>Contatos</h1>
+                <p>Importe sua lista, mantenha o funil atualizado e escolha quem entra na fila.</p>
+              </div>
+              <div class="header-actions">
+                <label class="button button-secondary" for="csv-input"><span class="icon" data-icon="upload" aria-hidden="true"></span> Importar CSV</label>
+                <input id="csv-input" type="file" accept=".csv,text/csv" hidden />
+                <button class="button button-primary" id="contacts-new" type="button"><span class="icon" data-icon="plus" aria-hidden="true"></span> Novo contato</button>
+              </div>
+            </div>
+            <div class="toolbar panel">
+              <label class="search-field"><span class="icon" data-icon="search" aria-hidden="true"></span><input id="contact-search" type="search" placeholder="Buscar responsável, restaurante, CNPJ, telefone ou rede social" autocomplete="off" /></label>
+              <label class="select-field"><span class="field-label visually-hidden">Etapa</span><select id="contact-stage-filter"><option value="">Todas as etapas</option></select></label>
+              <button class="button button-quiet" id="contacts-refresh" type="button"><span class="icon" data-icon="refresh" aria-hidden="true"></span> Atualizar</button>
+            </div>
+            <div class="panel table-panel">
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead><tr><th>Restaurante / responsável</th><th>Telefone</th><th>Etapa</th><th>Retorno</th><th>Último contato</th><th class="align-right">Ações</th></tr></thead>
+                  <tbody id="contacts-body"><tr><td colspan="6"><div class="loading-state"><span class="spinner"></span> Carregando contatos...</div></td></tr></tbody>
+                </table>
+              </div>
+              <div class="table-mobile-list" id="contacts-mobile-list"></div>
+            </div>
+          </section>
+
+          <section class="view" data-view="funnel">
+            <div class="page-header">
+              <div>
+                <div class="eyebrow">PIPELINE COMERCIAL</div>
+                <h1>Funil de restaurantes</h1>
+                <p>Arraste os cartões entre as etapas ou use o seletor de cada lead. Todos os dados públicos e o andamento importado são preservados.</p>
+              </div>
+              <button class="button button-secondary" id="funnel-refresh" type="button"><span class="icon" data-icon="refresh" aria-hidden="true"></span> Atualizar funil</button>
+            </div>
+            <div class="toolbar panel funnel-toolbar">
+              <label class="search-field"><span class="icon" data-icon="search" aria-hidden="true"></span><input id="funnel-search" type="search" placeholder="Buscar restaurante, responsável, CNPJ ou telefone" autocomplete="off" /></label>
+              <label class="select-field"><span class="field-label visually-hidden">Cidade</span><select id="funnel-city-filter"><option value="">Todas as cidades</option></select></label>
+              <label class="select-field"><span class="field-label visually-hidden">Prioridade</span><select id="funnel-priority-filter"><option value="">Todas as prioridades</option></select></label>
+            </div>
+            <div class="pipeline-strip" id="pipeline-strip" aria-label="Resumo do funil"></div>
+            <div class="kanban-shell panel">
+              <div class="kanban-board" id="kanban-board" aria-live="polite">
+                <div class="loading-state"><span class="spinner"></span> Carregando funil...</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="view" data-view="history">
+            <div class="page-header">
+              <div>
+                <div class="eyebrow">RASTREABILIDADE</div>
+                <h1>Histórico de ligações</h1>
+                <p>Veja o que já foi tentado e qual foi o resultado registrado para cada contato.</p>
+              </div>
+              <button class="button button-secondary" id="history-refresh" type="button"><span class="icon" data-icon="refresh" aria-hidden="true"></span> Atualizar histórico</button>
+            </div>
+            <div class="history-summary" id="history-summary"></div>
+            <div class="panel table-panel">
+              <div class="table-wrap">
+                <table class="data-table history-table">
+                  <thead><tr><th>Contato</th><th>Data e hora</th><th>Resultado</th><th>Duração</th><th>Nota</th></tr></thead>
+                  <tbody id="history-body"><tr><td colspan="5"><div class="loading-state"><span class="spinner"></span> Carregando histórico...</div></td></tr></tbody>
+                </table>
+              </div>
+              <div class="table-mobile-list" id="history-mobile-list"></div>
+            </div>
+          </section>
+
+          <section class="view" data-view="settings">
+            <div class="page-header">
+              <div>
+                <div class="eyebrow">AMBIENTE LOCAL</div>
+                <h1>Configuração</h1>
+                <p>Confira a ponte com o Android e os limites do modo de operação atual.</p>
+              </div>
+            </div>
+            <div class="settings-grid">
+              <article class="panel settings-card">
+                <div class="panel-heading"><div><div class="eyebrow">INTEGRAÇÃO</div><h2>Celular Android</h2></div><span class="settings-icon tone-blue"><span class="icon" data-icon="smartphone" aria-hidden="true"></span></span></div>
+                <div class="settings-status-row"><span class="status-dot" id="settings-status-dot"></span><strong id="settings-status-label">Verificando...</strong></div>
+                <dl class="details-list">
+                  <div><dt>Modelo</dt><dd id="settings-model">—</dd></div>
+                  <div><dt>Android</dt><dd id="settings-android">—</dd></div>
+                  <div><dt>Serial ADB</dt><dd class="monospace" id="settings-serial">—</dd></div>
+                  <div><dt>Executável ADB</dt><dd class="monospace wrap" id="settings-adb-path">—</dd></div>
+                </dl>
+                <button class="button button-secondary button-wide" id="settings-connect" type="button"><span class="icon" data-icon="link" aria-hidden="true"></span> Procurar celular novamente</button>
+              </article>
+              <article class="panel settings-card">
+                <div class="panel-heading"><div><div class="eyebrow">MODO DE VOZ</div><h2>Operação assistida</h2></div><span class="settings-icon tone-amber"><span class="icon" data-icon="volume-2" aria-hidden="true"></span></span></div>
+                <div class="info-callout"><span class="icon" data-icon="info" aria-hidden="true"></span><p>As chamadas são iniciadas pelo ADB. O áudio fica no viva-voz do celular; você classifica o resultado no PC.</p></div>
+                <ul class="plain-list"><li><span class="list-check">✓</span><span>Uma chamada por vez</span></li><li><span class="list-check">✓</span><span>Desligar pelo painel</span></li><li><span class="list-check">✓</span><span>Histórico e funil no disco D:</span></li><li><span class="list-muted">i</span><span>Não há áudio do celular roteado para o fone USB nesta etapa.</span></li></ul>
+              </article>
+              <article class="panel settings-card settings-storage-card">
+                <div class="panel-heading"><div><div class="eyebrow">ARMAZENAMENTO</div><h2>Dados do projeto</h2></div><span class="settings-icon tone-green"><span class="icon" data-icon="hard-drive" aria-hidden="true"></span></span></div>
+                <div class="storage-path">D:\Discador</div>
+                <p class="muted-text">O banco SQLite, a configuração e os arquivos da interface ficam dentro desta pasta.</p>
+                <div class="storage-items"><span><span class="status-dot status-dot-green"></span> Banco local</span><span><span class="status-dot status-dot-green"></span> Sem nuvem</span></div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <dialog class="contact-dialog" id="contact-dialog">
+      <form method="dialog" class="dialog-card" id="contact-form">
+        <div class="dialog-header"><div><div class="eyebrow" id="dialog-eyebrow">NOVO REGISTRO</div><h2 id="dialog-title">Adicionar contato</h2></div><button class="icon-button" value="cancel" type="submit" aria-label="Fechar"><span class="icon" data-icon="x" aria-hidden="true"></span></button></div>
+        <div class="dialog-scroll">
+          <fieldset class="form-section">
+            <legend>Contato e estabelecimento</legend>
+            <div class="form-grid">
+              <label class="field"><span class="field-label">Responsável *</span><input name="name" required maxlength="220" placeholder="Nome do responsável" /></label>
+              <label class="field"><span class="field-label">Cargo / função</span><input name="responsible_role" maxlength="220" placeholder="Sócio, gerente, decisor..." /></label>
+              <label class="field full"><span class="field-label">Restaurante / estabelecimento</span><input name="company" maxlength="220" placeholder="Nome do restaurante" /></label>
+              <label class="field"><span class="field-label">Telefone (obrigatório em novo contato)</span><input name="phone" inputmode="tel" maxlength="30" placeholder="(11) 99999-9999" /></label>
+              <label class="field"><span class="field-label">WhatsApp</span><input name="whatsapp" inputmode="tel" maxlength="30" placeholder="(11) 99999-9999" /></label>
+            </div>
+          </fieldset>
+          <fieldset class="form-section">
+            <legend>Andamento comercial</legend>
+            <div class="form-grid">
+              <label class="field"><span class="field-label">Etapa do funil</span><select name="stage" id="dialog-stage"></select></label>
+              <label class="field"><span class="field-label">Prioridade</span><select name="priority"><option value="">Sem marcação</option><option value="QUENTE">Quente</option><option value="PRIORITÁRIO">Prioritário</option><option value="MÉDIO">Médio</option><option value="BASE">Base</option></select></label>
+              <label class="field"><span class="field-label">Data de retorno</span><input name="return_date" type="datetime-local" /></label>
+              <label class="field"><span class="field-label">Pontuação</span><input name="score" type="number" min="0" step="1" /></label>
+              <label class="field full"><span class="field-label">Observações</span><textarea name="notes" rows="4" placeholder="Contexto, objeções, preferências e próximos passos..."></textarea></label>
+            </div>
+          </fieldset>
+          <details class="form-disclosure">
+            <summary>Dados públicos e redes sociais</summary>
+            <div class="form-grid">
+              <label class="field"><span class="field-label">Cidade</span><input name="city" maxlength="120" /></label>
+              <label class="field"><span class="field-label">Categoria</span><input name="category" maxlength="160" /></label>
+              <label class="field full"><span class="field-label">Endereço</span><input name="address" maxlength="320" /></label>
+              <label class="field"><span class="field-label">Razão social</span><input name="legal_company" maxlength="260" /></label>
+              <label class="field"><span class="field-label">CNPJ</span><input name="cnpj" maxlength="30" /></label>
+              <label class="field"><span class="field-label">E-mail</span><input name="email" type="email" maxlength="220" /></label>
+              <label class="field"><span class="field-label">Site</span><input name="website" type="url" maxlength="320" /></label>
+              <label class="field"><span class="field-label">Instagram</span><input name="instagram" maxlength="320" placeholder="@perfil ou link" /></label>
+              <label class="field"><span class="field-label">Facebook</span><input name="facebook" maxlength="320" placeholder="Link do perfil ou página" /></label>
+              <label class="field"><span class="field-label">Confiança da fonte</span><input name="confidence" maxlength="180" /></label>
+              <label class="field"><span class="field-label">Link da fonte</span><input name="source_url" type="url" maxlength="500" /></label>
+              <label class="field full"><span class="field-label">Observação pública da base</span><textarea name="public_note" rows="3"></textarea></label>
+            </div>
+          </details>
+        </div>
+        <div class="dialog-footer"><button class="button button-quiet" value="cancel" type="submit">Cancelar</button><button class="button button-primary" id="dialog-save" value="default" type="submit">Salvar contato</button></div>
+      </form>
+    </dialog>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

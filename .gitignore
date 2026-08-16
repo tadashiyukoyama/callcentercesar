@@ -1,0 +1,21 @@
+# Dados e configuracoes locais
+/data/
+/backups/
+/config.json
+
+# Artefatos de verificacao
+/verification/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Logs e arquivos temporarios
+*.log
+*.tmp
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
